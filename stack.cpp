@@ -6,31 +6,29 @@
 
 using namespace std;
 
-bool stack::push(string str){
+bool Stack::push(string str){
     this->stck.push_back(str);
     this->lastindex++;
     this->size++;
     return true;
 }
 
-string stack::pop(){
+void Stack::pop(){
     try{
-        string str = this->stck.at(this->lastindex);
         this->stck.pop_back();
         this->lastindex--;
-        return str;
     }
-    catch(exception e){
-        cout << "Empty stack!" << endl;
+    catch(exception &e){
+        throw runtime_error("Empty stack!");
     }
 }
 
-string stack::top(){
+string Stack::top(){
     try{
         string str = this->stck.at(this->lastindex);
         return str;
     }
-    catch(exception e){
-        cout << "Empty stack!" << endl;
+    catch(exception& e){
+        throw runtime_error("Empty stack!");
     }
 }

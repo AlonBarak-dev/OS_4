@@ -16,10 +16,15 @@
 #include <signal.h>
 #include <pthread.h>
 #include "stack.hpp"
+#include <iostream>       // std::cout
+#include <mutex>          // std::mutex
 
 #define PORT "3490"  // the port users will be connecting to
 
 #define BACKLOG 10   // how many pending connections queue will hold
+
+std::mutex lock;        // mutex lock 
+Stack stck; //initalize a stack for the server 
 
 void sigchld_handler(int s)
 {
@@ -49,8 +54,39 @@ void *send_to_user(void *args)
     int new_fd = *actual_args;
     free(actual_args);
     sleep(5);
-    if (send(new_fd, "Hello, world!", 13, 0) == -1)
-        perror("send");
+    char buffer[1024] = {0};
+    while(true){
+        read(new_fd, buffer, 1024);
+        if (strncmp(buffer, "PUSH ",5) == 0)
+        {
+            // the PUSH command is executed
+            lock.lock();
+            std::string s(buffer+5);    // convert char pointer to string
+            stck.push(s);
+            lock.unlock();
+        }
+        else if (strncmp(buffer, "TOP",3) == 0)
+        {
+            // the POP command is executed
+            lock.lock();
+            std::string s = stck.top();
+            if(send(new_fd, s.c_str(), s.size(),0) == -1){
+                perror("send error!");
+            }
+            lock.unlock();
+        }
+        else if (strncmp(buffer, "POP",3) == 0)
+        {
+            // the POP command is executed
+            lock.lock();
+            stck.pop();     // pop from the stack
+            lock.unlock();
+        }
+        else if (strcmp(buffer, "EXIT") == 0){
+            break;
+        }
+        bzero(buffer, 1024);
+    }
     
     close(new_fd);
     return NULL;

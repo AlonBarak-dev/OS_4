@@ -1,17 +1,27 @@
-OBJS	= server.o
-SOURCE	= server.cpp
-HEADER	= 
-OUT	= server.out
-CC	 = gcc
+OBJS	= server.o stack.o
+SOURCE	= server.cpp stack.cpp
+HEADER	= stack.hpp
+OUT	= server
+CC	 = g++
 FLAGS	 = -g -c -Wall
 LFLAGS	 = -lpthread
 
-all: $(OBJS)
+all: server client
+
+server: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-server.o: server.cpp
+client: client.o
+	$(CC) client.o -o client 
+
+server.o: server.cpp 
 	$(CC) $(FLAGS) server.cpp
 
+stack.o: stack.cpp
+	$(CC) $(FLAGS) stack.cpp
+
+client.o: client.cpp
+	$(CC) -c client.cpp
 
 clean:
-	rm -f $(OBJS) $(OUT)
+	rm -f $(OBJS) $(OUT) client *.o

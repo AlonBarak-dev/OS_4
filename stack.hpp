@@ -5,7 +5,7 @@
 
 
 
-class stack
+class Stack
 {
 private:
     
@@ -14,9 +14,9 @@ private:
     std::vector<std::string> stck;
 
 public:
-    stack() : stck(std::vector<std::string>()), size(0), lastindex(-1){}
-    ~stack(){}
+    Stack() : size(0), lastindex(-1){}
+    ~Stack(){}
     bool push(std::string str);
-    std::string pop();
+    void pop();
     std::string top();
 };
