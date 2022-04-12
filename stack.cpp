@@ -4,17 +4,21 @@
 #include <string.h>
 
 void push(pnode *head, char data[1024]){
-    pnode new_node = (pnode) malloc(sizeof(node));      // dynamic allocation
-    new_node->data = data;
-    new_node->next = NULL;
     
     // in case the stack is empty -> the new node will be the head of the stack
     if (*head == NULL)
     {
-        *head = new_node;
+        *head = (pnode) malloc(sizeof(node));
+        (*head)->data = (char*) malloc(sizeof(char)*1024);
+        memcpy((*head)->data,data, strlen(data));
+        (*head)->next = NULL;
     }
     else
     {
+        pnode new_node = (pnode) malloc(sizeof(node));      // dynamic allocation
+        new_node->data = (char*) malloc(sizeof(char)*1024);
+        memcpy(new_node->data,data, strlen(data));
+        new_node->next = NULL;
         pnode *ptr = head;  //temporary pointer
         while ((*ptr)->next)
         {
@@ -46,16 +50,17 @@ void pop(pnode *head){
     free(del); 
 }
 
-char* top(pnode head){
+char* top(pnode *head){
 
     // return the data of the last node in the stack
     // loop until the last node
-    while (head->next)
+    pnode *ptr = head;  //temporary pointer
+    while ((*ptr)->next)
     {
-        // increament the node
-        head = head->next;
+        // loop until the last node in the stack
+        ptr = &((*ptr)->next);      // increament the pointer
     }
-    return head->data;
+    return (*ptr)->data;
 }
 
 

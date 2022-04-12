@@ -11,7 +11,7 @@ typedef struct stack_node
 
 void push(pnode *head, char data[1024]); // push -> receives head of stack (double pointer) & data array
 void pop(pnode *head);  // pop -> receives head of stack (double pointer)
-char* top(pnode head);  // top -> receives head of stack (pointer)
+char* top(pnode *head);  // top -> receives head of stack (pointer)
 
 #endif
 

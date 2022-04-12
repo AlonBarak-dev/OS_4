@@ -47,9 +47,8 @@ int main(int argc, char const* argv[])
         send(sock, command, strlen(command), 0);
         if (strncmp(command, "TOP",3) == 0)
         {
-            read(sock, command, 1024);
-            printf("OUTPUT:");
-            printf("%s\n", command);
+            recv(sock, command, 1024,0);
+            printf("OUTPUT:%s\n", command);
         }
         bzero(command, 1024);
     }

@@ -23,8 +23,16 @@
 
 #define BACKLOG 10   // how many pending connections queue will hold
 
+struct arg_struct {
+    int arg1;
+    pnode *head;
+};
+
+
+void push(pnode *head, char data[1024]); // push -> receives head of stack (double pointer) & data array
+void pop(pnode *head);  // pop -> receives head of stack (double pointer)
+char* top(pnode head);  // top -> receives head of stack (pointer)
 std::mutex lock;        // mutex lock 
-Stack stck; //initalize a stack for the server 
 
 void sigchld_handler(int s)
 {
@@ -50,9 +58,9 @@ void *get_in_addr(struct sockaddr *sa)
 void *send_to_user(void *args)
 {
     
-    int * actual_args = (int *)args;
-    int new_fd = *actual_args;
-    free(actual_args);
+    struct arg_struct *argss = (struct arg_struct *)args;
+    int new_fd = argss->arg1;
+    
     sleep(5);
     char buffer[1024] = {0};
     while(true){
@@ -60,35 +68,42 @@ void *send_to_user(void *args)
         if (strncmp(buffer, "PUSH ",5) == 0)
         {
             // the PUSH command is executed
+            std::cout << "waiting" << std::endl;
             lock.lock();
-            std::string s(buffer+5);    // convert char pointer to string
-            stck.push(s);
+            std::cout << "DEBUG:push" << std::endl;       // DEBUG 
+            push(argss->head, buffer+5);  // push the input of the buffer into the stack
             lock.unlock();
         }
         else if (strncmp(buffer, "TOP",3) == 0)
         {
             // the POP command is executed
             lock.lock();
-            std::string s = stck.top();
-            if(send(new_fd, s.c_str(), s.size(),0) == -1){
+            std::cout << "DEBUG:top" << std::endl;       // DEBUG 
+            char* str = top(argss->head);      // top the last node of the stack
+            sleep(3);
+            if(send(new_fd, str, strlen(str),0) == -1){
                 perror("send error!");
             }
+            std::cout << "DEBUG:msg sent" << std::endl;       // DEBUG 
             lock.unlock();
         }
         else if (strncmp(buffer, "POP",3) == 0)
         {
             // the POP command is executed
             lock.lock();
-            stck.pop();     // pop from the stack
+            std::cout << "DEBUG:pop" << std::endl;       // DEBUG 
+            pop(argss->head);     // pop the last node from the stack
             lock.unlock();
         }
         else if (strcmp(buffer, "EXIT") == 0){
+            std::cout << "DEBUG:exit" << std::endl;       // DEBUG 
             break;
         }
         bzero(buffer, 1024);
     }
     
     close(new_fd);
+    free(args);
     return NULL;
 }
 
@@ -102,6 +117,9 @@ int main(void)
     int yes=1;
     char s[INET6_ADDRSTRLEN];
     int rv;
+    
+    pnode head = NULL;      // head of the stack
+
 
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
@@ -172,9 +190,12 @@ int main(void)
         printf("server: got connection from %s\n", s);
 
         pthread_t thread_id;
-        int *args = (int*) malloc(sizeof(int));
-        *args = new_fd;
-        pthread_create(&thread_id, NULL, send_to_user, args);
+        // int *args = (int*) malloc(sizeof(int));
+        // *args = new_fd;
+        struct arg_struct args;
+        args.arg1 = new_fd;
+        args.head = &head;
+        pthread_create(&thread_id, NULL, send_to_user, (void*)&args);
         
     }
 
