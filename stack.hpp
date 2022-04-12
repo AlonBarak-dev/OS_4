@@ -15,20 +15,3 @@ char* top(pnode *head);  // top -> receives head of stack (pointer)
 
 #endif
 
-
-
-// class Stack
-// {
-// private:
-    
-//     int size;
-//     int lastindex;
-//     std::vector<std::string> stck;
-
-// public:
-//     Stack() : size(0), lastindex(-1){}
-//     ~Stack(){}
-//     bool push(std::string str);
-//     void pop();
-//     std::string top();
-// };

@@ -38,13 +38,13 @@ void pop(pnode *head){
         return;
     }
     pnode *ptr = head;  //temporary pointer
-    while ((*ptr)->next->next)
+    while ((*ptr)->next)
     {
         // loop until the one befre the last node in the stack
         ptr = &((*ptr)->next);      // increament the pointer
     }
-    pnode del = (*ptr)->next;    // the node we want to delete
-    (*ptr)->next = NULL;    // remove the last node from the stack
+    pnode del = (*ptr);    // the node we want to delete
+    (*ptr) = NULL;    // remove the last node from the stack
 
     // free the deleted node
     free(del); 
@@ -53,6 +53,12 @@ void pop(pnode *head){
 char* top(pnode *head){
 
     // return the data of the last node in the stack
+
+    // if the stack is empty -> return empty string
+    if (*head == NULL){
+        return NULL;
+    }
+
     // loop until the last node
     pnode *ptr = head;  //temporary pointer
     while ((*ptr)->next)
@@ -63,32 +69,3 @@ char* top(pnode *head){
     return (*ptr)->data;
 }
 
-
-// using namespace std;
-
-// bool Stack::push(string str){
-//     this->stck.push_back(str);
-//     this->lastindex++;
-//     this->size++;
-//     return true;
-// }
-
-// void Stack::pop(){
-//     try{
-//         this->stck.pop_back();
-//         this->lastindex--;
-//     }
-//     catch(exception &e){
-//         throw runtime_error("Empty stack!");
-//     }
-// }
-
-// string Stack::top(){
-//     try{
-//         string str = this->stck.at(this->lastindex);
-//         return str;
-//     }
-//     catch(exception& e){
-//         throw runtime_error("Empty stack!");
-//     }
-// }

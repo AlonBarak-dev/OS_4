@@ -18,6 +18,7 @@
 #include "stack.hpp"
 #include <iostream>       // std::cout
 #include <mutex>          // std::mutex
+//#include <tbb/mutex.h>  // tbb:mutex
 
 #define PORT "3490"  // the port users will be connecting to
 
@@ -32,7 +33,10 @@ struct arg_struct {
 void push(pnode *head, char data[1024]); // push -> receives head of stack (double pointer) & data array
 void pop(pnode *head);  // pop -> receives head of stack (double pointer)
 char* top(pnode head);  // top -> receives head of stack (pointer)
-std::mutex lock;        // mutex lock 
+
+std::mutex lock;        // mutex lock -> QUES 6
+//tbb::mutex lock;          // tbb mutex lock -> QUES 7
+
 
 void sigchld_handler(int s)
 {
@@ -79,9 +83,13 @@ void *send_to_user(void *args)
             // the POP command is executed
             lock.lock();
             std::cout << "DEBUG:top" << std::endl;       // DEBUG 
-            char* str = top(argss->head);      // top the last node of the stack
-            sleep(3);
-            if(send(new_fd, str, strlen(str),0) == -1){
+            char* str;
+            if((str = top(argss->head)) == NULL){
+                std::cout << "DEBUG:top EMPTY" << std::endl;       // DEBUG
+                char emp[2] = {'-', '\0'};
+                send(new_fd, emp, strlen(emp),0);
+            }
+            else if(send(new_fd, str, strlen(str),0) == -1){
                 perror("send error!");
             }
             std::cout << "DEBUG:msg sent" << std::endl;       // DEBUG 
