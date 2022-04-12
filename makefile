@@ -1,5 +1,5 @@
 OBJS	= server.o
-SOURCE	= server.c
+SOURCE	= server.cpp
 HEADER	= 
 OUT	= server.out
 CC	 = gcc
@@ -9,8 +9,8 @@ LFLAGS	 = -lpthread
 all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-server.o: server.c
-	$(CC) $(FLAGS) server.c 
+server.o: server.cpp
+	$(CC) $(FLAGS) server.cpp
 
 
 clean:
