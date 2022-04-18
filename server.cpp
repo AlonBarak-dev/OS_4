@@ -3,7 +3,7 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
@@ -72,9 +72,7 @@ void *send_to_user(void *args)
         if (strncmp(buffer, "PUSH ",5) == 0)
         {
             // the PUSH command is executed
-            std::cout << "waiting" << std::endl;
             lock.lock();
-            std::cout << "DEBUG:push" << std::endl;       // DEBUG 
             push(argss->head, buffer+5);  // push the input of the buffer into the stack
             lock.unlock();
         }
@@ -82,29 +80,24 @@ void *send_to_user(void *args)
         {
             // the POP command is executed
             lock.lock();
-            std::cout << "DEBUG:top" << std::endl;       // DEBUG 
             char* str;
             if((str = top(argss->head)) == NULL){
-                std::cout << "DEBUG:top EMPTY" << std::endl;       // DEBUG
                 char emp[2] = {'-', '\0'};
                 send(new_fd, emp, strlen(emp),0);
             }
             else if(send(new_fd, str, strlen(str),0) == -1){
                 perror("send error!");
             }
-            std::cout << "DEBUG:msg sent" << std::endl;       // DEBUG 
             lock.unlock();
         }
         else if (strncmp(buffer, "POP",3) == 0)
         {
             // the POP command is executed
             lock.lock();
-            std::cout << "DEBUG:pop" << std::endl;       // DEBUG 
             pop(argss->head);     // pop the last node from the stack
             lock.unlock();
         }
         else if (strcmp(buffer, "EXIT") == 0){
-            std::cout << "DEBUG:exit" << std::endl;       // DEBUG 
             break;
         }
         bzero(buffer, 1024);

@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 // UESD THIS GITHUB ACCOUNT : https://github.com/andrestc/linux-prog/blob/master/ch7/malloc.c
-// FOR MALLOC AND FREE IMPLEMENTATIONS
+// FOR MALLOC AND FREE IMPLEMENTATIONS, CALLOC IS DONE BY US
 
 typedef struct block {
 	size_t		size;
@@ -190,6 +190,16 @@ void _cleanup()
 		}
 	}
 	head = NULL;
+}
+
+void *calloc(size_t n, size_t size)
+{
+	size_t total = n * size;
+	void *p = _malloc(total);
+	
+	if (!p) return NULL;
+	
+	return memset(p, 0, total);
 }
 
 /*
