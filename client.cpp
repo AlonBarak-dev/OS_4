@@ -60,7 +60,6 @@ int main(int argc, char const* argv[])
         bzero(command, 1024);
     }
     
-	printf("Hello message sent\n");
 	valread = read(sock, buffer, 1024);
 	printf("%s\n", buffer);
 	return 0;
