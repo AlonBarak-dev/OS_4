@@ -8,16 +8,18 @@ The implementation of the Stack and the Dynamic Memory Allocation functions you 
 in order to run the project do the following:
 1. Compile the code - $ make
 2. Run the Server - $ ./server
-3. Run a Client - $ ./client
+3. Run a Client - $ ./client "IP_ADDRESS"
 
-###Test
+Please noitce that the server is listen on port 3490 at 127.0.0.1
+
+### Test
 The test checks if the stack preforms well and also checks the whole system 
-with three different clients (client_test1, client_test2, client_test3).
-the clients receives their input from their respective text files.
+with three different clients (Processes).
+the clients receives their input from the text file "test.txt".
 in order to run the test do the following:
-1. Compile the code - $ make
-2. Run the Server - $ ./server
-3. Run the Test - $ ./test
+1. Compile the code - $ make 
+2. Run the Test - $ ./test
 
+Ignore the prints on the screen, its the process log.
 
 P.S. The client connect directly to the server and no work should be done by the user!
