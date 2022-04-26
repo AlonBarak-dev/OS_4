@@ -58,96 +58,42 @@ int main(){
         Please make sure that the server is running before those tests!
     */
 
-    pid_t pid_first = fork(); // create a new process
-    if (pid_first < 0)
+    pid_t pid;
+    pid = fork();
+    // in case of an error while creating a new process
+    if (pid < 0)
     {
-        // fail
-        printf("Failed to create a new CLient");
+        printf("failed to create a new Child");
+        exit(-1);
     }
-
-    if (pid_first == 0)
+    else if (pid != 0)
     {
-        // child process
-        char cmd[] = "./client_test1";
-        char *child_args;
-        char * argv[] = {cmd, NULL};
-        // run the client
-        execvp(argv[0], argv);
-        exit(127);
+        // let the parent procees to run the server
+        system("./server");
     }
     else{
-        // parent process
+        // child process creats new clients
         sleep(2);
-        pid_t pid_second = fork(); // create a new process
-        if (pid_second < 0)
+        for (size_t i = 0; i < 3; i++)
         {
-            // fail
-            printf("Failed to create a new CLient");
+            pid_t pid_c;
+            pid_c = fork(); // new process
+
+            if (pid_c < 0)
+            {
+                printf("failed to create a new client");
+                exit(-1);
+            }
+            else if(pid_c == 0){
+                system("./client 127.0.0.1 < test.txt");   // creates new client in child process
+            }
+            
         }
-
-        if (pid_second == 0)
-        {
-            // child process
-            char cmd[] = "./client_test2";
-            char * argv[] = {cmd, NULL};
-            // run the client
-            execvp(argv[0], argv);
-            exit(127);
-        }
-        else{
-            // parent process
-            sleep(2);
-            pid_t pid_third = fork(); // create a new process
-            if (pid_third < 0)
-            {
-                // fail
-                printf("Failed to create a new CLient");
-            }
-
-            if (pid_third == 0)
-            {
-                // child process
-                char cmd[] = "./client_test3";
-                char * argv[] = {cmd, NULL};
-                // run the client
-                execvp(argv[0], argv);
-                exit(127);
-            }
-            else{
-                int status;
-                while (waitpid(pid_third, &status,0) == -1)
-                {
-                    if (errno != EINTR)
-                    {
-                        status = -1;
-                        break;
-                    }
-                }   
-            }   // third process
-
-            int status;
-            while (waitpid(pid_second, &status,0) == -1)
-            {
-                if (errno != EINTR)
-                {
-                    status = -1;
-                    break;
-                }
-            }   
-        }   // second process
-
-
-        int status;
-        while (waitpid(pid_first, &status,0) == -1)
-        {
-            if (errno != EINTR)
-            {
-                status = -1;
-                break;
-            }
-        }   
-
-    }   // first process
+        exit(0);
+        
+    }
+    
+    
     
     
 

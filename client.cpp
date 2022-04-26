@@ -41,6 +41,7 @@ int main(int argc, char const* argv[])
 		return -1;
 	}
     char command[1024] = {0};
+	sleep(3);
     while (true)
     {
         printf("Please enter a command:\n");
@@ -62,9 +63,8 @@ int main(int argc, char const* argv[])
 			break;
 		}
         bzero(command, 1024);
+		sleep(1);
     }
     
-	//valread = read(sock, buffer, 1024);
-	//printf("%s\n", buffer);
 	return 0;
 }

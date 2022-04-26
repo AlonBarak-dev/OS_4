@@ -34,8 +34,7 @@ void push(pnode *head, char data[1024]); // push -> receives head of stack (doub
 void pop(pnode *head);  // pop -> receives head of stack (double pointer)
 char* top(pnode head);  // top -> receives head of stack (pointer)
 
-std::mutex lock;        // mutex lock -> QUES 6
-//tbb::mutex lock;          // tbb mutex lock -> QUES 7
+std::recursive_mutex lock;        // mutex lock -> QUES 6
 
 
 void sigchld_handler(int s)
@@ -105,7 +104,6 @@ void *send_to_user(void *args)
     }
     
     close(new_fd);
-    //free(argss);
     return NULL;
 }
 
