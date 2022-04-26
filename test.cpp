@@ -9,12 +9,13 @@
 void push(pnode *head, char data[1024]); // push -> receives head of stack (double pointer) & data array
 void pop(pnode *head);  // pop -> receives head of stack (double pointer)
 char* top(pnode head);  // top -> receives head of stack (pointer)
-
+void* _malloc(size_t size);
+void _free(void *ptr);
 
 int main(){
 
     // ~~~~~~~~~~~~~~~~~~~~~ TESTS FOR THE STACK STRUCT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    pnode st = (pnode)malloc(sizeof(node));     // inititalize a stack
+    pnode st = (pnode)_malloc(sizeof(node));     // inititalize a stack
     char buffer[1024] = {0};
     // push "hello" into ths stack
     memcpy(buffer, "hello", 5);
@@ -43,10 +44,10 @@ int main(){
     memcpy(buffer, "hello", 5);
     assert(memcmp(top(&st), buffer, 5) == 0);
 
-    printf("Run succesfully\n");
+    printf("Stack Test run succesfully\n");
 
     // free the stack
-    free(st);
+    _free(st);
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~ DONE WITH STACK'S TESTS ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -97,14 +97,15 @@ void *send_to_user(void *args)
             pop(argss->head);     // pop the last node from the stack
             lock.unlock();
         }
-        else if (strcmp(buffer, "EXIT") == 0){
+        else if (strncmp(buffer, "EXIT",4) == 0){
+            printf("Connection stopped from one client\n");
             break;
         }
         bzero(buffer, 1024);
     }
     
     close(new_fd);
-    free(args);
+    //free(argss);
     return NULL;
 }
 
@@ -191,8 +192,7 @@ int main(void)
         printf("server: got connection from %s\n", s);
 
         pthread_t thread_id;
-        // int *args = (int*) malloc(sizeof(int));
-        // *args = new_fd;
+        
         struct arg_struct args;
         args.arg1 = new_fd;
         args.head = &head;

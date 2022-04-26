@@ -26,7 +26,8 @@ int main(int argc, char const* argv[])
 
 	// Convert IPv4 and IPv6 addresses from text to binary
 	// form
-	if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)
+	const char * ip_address = argv[1];
+	if (inet_pton(AF_INET, ip_address, &serv_addr.sin_addr)
 		<= 0) {
 		printf(
 			"\nInvalid address/ Address not supported \n");
@@ -57,10 +58,13 @@ int main(int argc, char const* argv[])
 				printf("OUTPUT:%s\n", command);
 			}
         }
+		else if(strncmp(command, "EXIT", 4) == 0){
+			break;
+		}
         bzero(command, 1024);
     }
     
-	valread = read(sock, buffer, 1024);
-	printf("%s\n", buffer);
+	//valread = read(sock, buffer, 1024);
+	//printf("%s\n", buffer);
 	return 0;
 }
