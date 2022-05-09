@@ -1,10 +1,11 @@
 # OS_4
 
-Alon Barak & Idan Philosof. <br>
+Alon Barak - 213487598 & Idan Philosoph - 324076066. <br>
 
 The fourth assignment of the Operating Systems Course.<br>
 This repo contains an implementation of a multithreaded server which serves as a stack to its client.<br>
 In this project we were inspired by https://github.com/andrestc/linux-prog/blob/master/ch7/malloc.c repo,<br>
+and in https://stackoverflow.com/a/12773678 <br>
 for the Malloc and Free functions.<br>
 
 - The server can handle up to 10 clients in real time.<br>
@@ -12,7 +13,7 @@ for the Malloc and Free functions.<br>
 
 ## run the project:<br>
 
-1. Compile the code - $ make
+1. Compile the code - $ make all
 2. Run the Server - $ ./server
 3. Run a Client - $ ./client "IP_ADDRESS"
 
@@ -23,9 +24,10 @@ The test checks if the stack preforms well and also checks the whole system
 with three different clients (Processes).
 the clients receives their input from the text file "test.txt".
 in order to run the test do the following:
-1. Compile the code - $ make 
+1. Compile the code - $ make all
 2. Run the Test - $ ./test
 
-- Ignore the prints on the screen, its the process log.
+- Ignore the prints on the screen, its the process log. <br>
+- Should see 'BARAK' 3 times and then 'ALON' 3 times <br>
 
 - P.S. The client connect directly to the server and no work should be done by the user!

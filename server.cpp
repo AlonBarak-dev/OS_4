@@ -3,7 +3,6 @@
 */
 
 #include <stdio.h>
-//#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
@@ -18,7 +17,6 @@
 #include "stack.hpp"
 #include <iostream>       // std::cout
 #include <mutex>          // std::mutex
-//#include <tbb/mutex.h>  // tbb:mutex
 
 #define PORT "3490"  // the port users will be connecting to
 
@@ -33,8 +31,12 @@ struct arg_struct {
 void push(pnode *head, char data[1024]); // push -> receives head of stack (double pointer) & data array
 void pop(pnode *head);  // pop -> receives head of stack (double pointer)
 char* top(pnode head);  // top -> receives head of stack (pointer)
+void* _malloc(size_t size);
+void* _calloc(size_t size);
+void _free(void *address);
 
-std::recursive_mutex lock;        // mutex lock -> QUES 6
+
+static pthread_mutex_t lock;        // mutex lock -> QUES 6
 
 
 void sigchld_handler(int s)
@@ -71,14 +73,14 @@ void *send_to_user(void *args)
         if (strncmp(buffer, "PUSH ",5) == 0)
         {
             // the PUSH command is executed
-            lock.lock();
+            pthread_mutex_lock(&lock);
             push(argss->head, buffer+5);  // push the input of the buffer into the stack
-            lock.unlock();
+            pthread_mutex_unlock(&lock);
         }
         else if (strncmp(buffer, "TOP",3) == 0)
         {
             // the POP command is executed
-            lock.lock();
+            pthread_mutex_lock(&lock);
             char* str;
             if((str = top(argss->head)) == NULL){
                 char emp[2] = {'-', '\0'};
@@ -87,14 +89,14 @@ void *send_to_user(void *args)
             else if(send(new_fd, str, strlen(str),0) == -1){
                 perror("send error!");
             }
-            lock.unlock();
+            pthread_mutex_unlock(&lock);
         }
         else if (strncmp(buffer, "POP",3) == 0)
         {
             // the POP command is executed
-            lock.lock();
+            pthread_mutex_lock(&lock);
             pop(argss->head);     // pop the last node from the stack
-            lock.unlock();
+            pthread_mutex_unlock(&lock);
         }
         else if (strncmp(buffer, "EXIT",4) == 0){
             printf("Connection stopped from one client\n");
